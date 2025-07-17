@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Penyeweaan dan penjualan BOT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+
+        /* Background Video */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        /* Overlay untuk membuat teks lebih terbaca */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+        
+        /* Container utama */
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Header dengan foto profil */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            border: none;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Teks transparan */
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        /* Card produk */
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .product-title {
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+        }
+
+        .product-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Tombol */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(45deg, #128C7E, #25D366);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-instagram {
+            background: linear-gradient(45deg, #E4405F, #C13584, #833AB4);
+            color: white;
+        }
+
+        .btn-instagram:hover {
+            background: linear-gradient(45deg, #C13584, #E4405F, #833AB4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(228, 64, 95, 0.4);
+        }
+
+        .btn-tiktok {
+            background: linear-gradient(45deg, #000000, #ff0050);
+            color: white;
+        }
+
+        .btn-tiktok:hover {
+            background: linear-gradient(45deg, #ff0050, #000000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 80, 0.4);
+        }
+
+        .btn-admin {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(45deg, #4ECDC4, #FF6B6B);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+         .btn-mediafire {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+            color: white;
+        }
+
+        .btn-mediafire:hover {
+            background: linear-gradient(45deg, #128C7E, #25D366);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+         .btn-pinterest {
+            background: linear-gradient(45deg, #E4405F, #C13584, #833AB4);
+            color: white;
+        }
+
+        .btn-pinterest:hover {
+            background: linear-gradient(45deg, #833AB4, #E4405F, #C13584);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(228, 64, 95, 0.4);
+         }
+
+        /* Social media section */
+        .social-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .social-title {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Features list */
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features-title {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .feature-item {
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-item:before {
+            content: "🌸";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .rule-item {
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .rule-item:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .product-card {
+                margin: 15px 10px;
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+                margin: 8px;
+            }
+            
+            .social-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .profile-image {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .product-card {
+                padding: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        /* Animasi masuk */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Floating animation */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Tombol Mute/Unmute */
+        .mute-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .mute-button:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        @media (max-width: 480px) {
+            .mute-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Visit stats */
+        #visit-stats {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 999;
+        }
+    </style>
+
+<style>
+.harga-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 0 10px rgba(0,255,255,0.3);
+}
+</style>
+
+</head>
+<body>
+    <!-- Start Overlay -->
+    <div id="startOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:#000a;display:flex;justify-content:center;align-items:center;flex-direction:column;">
+        <button id="startButton" style="padding:15px 30px;font-size:1.5rem;border:none;border-radius:10px;background:linear-gradient(90deg,#00c6ff,#0072ff);color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4);">▶️ Mulai</button>
+        <p style="color:white;margin-top:20px;font-size:1rem;">Klik tombol untuk memulai dengan suara</p>
+    </div>
+
+    <!-- Background Image -->
+    <div class="background-image"></div>
+
+    <!-- Background Video -->
+    <video autoplay class="video-background" id="backgroundVideo" loop muted playsinline>
+        <source src="https://files.catbox.moe/4hn9z1.mp4" type="video/mp4"/>
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Mute/Unmute Button -->
+    <button class="mute-button" id="muteButton">🔇</button>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Visit Stats -->
+    <div id="visit-stats">
+        Menghitung statistik...
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header fade-in">
+            <img alt="Profile" class="profile-image floating" src="https://files.catbox.moe/xnaeum.jpg"/>
+            <h1 class="title">Sewa/Beli BOT</h1>
+            <p class="subtitle">Penyewaan BOT dimulai dari 10k aja
+            Dan Bonus SetUp</p>
+        </div>
+
+        <!-- Tentang Grup -->
+        <div class="product-card fade-in">
+            <h2 class="product-title">🌸 Tentang Kami</h2>
+            <p class="product-description">
+               KAMI ADALAH TIM PENGEMBANG YANG FOKUS MENYEDIAKAN BOT ANIME BERKUALITAS TINGGI UNTUK KOMUNITAS WHATS'AAP,
+                DENGAN PENGALAMAN DI BIDANG OTOMASI, AI, DAN KOMUNITAS OTAKU/WIBU, KAMI MENGHADIRKAN BOT YANG TIDAK HANYA PINTAR,
+                TAPI SERU JUGA, INTERAKTIF, DAN PENUH NUANSA ANIME.
+                   
+            </p>
+        </div>
+
+        <!-- Aktivitas Grup -->
+        <div class="features fade-in">
+            <h3 class="features-title">🔖 Fitur Unggulan</h3>
+            <div class="feature-item">Menu Ai</div>
+            <div class="feature-item">Intro Otomatis Ketika Ada Yang Join</div>
+            <div class="feature-item">Pencatatan Absensi</div>
+            <div class="feature-item">Cari Waifu Random</div>
+            <div class="feature-item">Ban User</div>
+            <div class="feature-item">Enchange Gambar HD</div>
+            <div class="feature-item">Mini Games</div>
+            <div class="feature-item">Auto Respon & Anti Spam</div>
+            <div class="feature-item">Fitur Nightcore & Audio</div>
+              <div class="feature-item">Download Mp3/Mp4 Dengan Menggunakan Link</div>
+        </div>
+
+        <!-- Peraturan Grup -->
+        <div class="features fade-in">
+            <h3 class="features-title">📋 Peraturan!! (WAJIB DIPATUHI!)</h3>
+            <div class="rule-item">Jangan Spam Perintah</div>
+            <div class="rule-item">Gunakan Fitur Sesuai Fungsinya</div>
+            <div class="rule-item">Hargai Sesam Pengguna</div>
+            <div class="rule-item">Akses BOT Hanya Berlaku Selama Masa Sewa Aktif</div>
+            <div class="rule-item">Tidak Boleh Menjual Ulang Atau Menyebarkan Nomer BOT</div>
+            <div class="rule-item">Pelanggaran Berat bisa Menyebabkan BANNED Tanpa REFUND</div>
+            <div class="rule-item">Maksimal 2 Peringatan, Setelah Itu Auto BAN</div>
+        </div>
+
+        <!-- Genre Anime yang Dibahas -->
+        <div class="product-card fade-in">
+            <h2 class="product-title">📍 Info Penting 📍<h2>
+            <p class="product-description">
+                  <div class="rule-item">Fitur & Sistem Bisa Berubah Sewaktu-waktu</div>
+                  <div class="rule-item">Sewa BOT Akan Mendapatkan Notifikasi Jika Ada Update Penting</div>
+                  <div class="rule-item">Kami Berhak Membatasi Atau Menghentikan Akses Jika Digunakan Seacara Tidak Wajar</div>
+            </p>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="social-section fade-in">
+            <h3 class="social-title">🚀 Bergabung dengan Kami!</h3>
+            <div class="social-buttons">
+                <a class="btn btn-whatsapp" href="https://chat.whatsapp.com/KoyrRZ7CXXeEVrZp82L8lB?mode=r_t" target="_blank">
+                    👥 Gabung Grup WhatsApp
+                </a>
+                <a class="btn btn-admin" href="https://wa.me/6285135673054?text=Assalamualaikum%20bang" target="_blank">
+                    💬 Chat Admin
+                </a>
+                <a class="btn btn-instagram" href="https://whatsapp.com/channel/0029Vb6RNq7Ae5VmORFEoR26" target="_blank">
+                    🌸 Saluran WhatsApp
+                </a>
+                <a class="btn btn-tiktok" href="https://www.tiktok.com/@gelapdansepi?_t=ZS-8xvDUqkBORM&_r=1" target="_blank">
+                    🎵 TikTok
+                </a>
+            </div>
+        </div>
+
+        <!-- Info Tambahan -->
+        <div class="product-card fade-in">
+            <h2 class="product-title">ℹ️ Info Tambahan</h2>
+            <p class="product-description">
+                <strong>📌</strong>Bot Tidak Menyimpan Chat Pribadi Pengguna<br/>
+                <strong>📌 </strong>Semua Data Akan Direset Secara Berkala <br/>
+        </p>
+            <p class="product-description">
+                <strong>Jam Aktif:</strong> 24/7 (Admin online pukul 08:00 - 22:00 WIB)<br/>
+                <strong>Bahasa:</strong> Indonesia (Bahasa Inggris diperbolehkan)
+            </p>
+        </div>
+        <div class="bot-showcase fade-in">
+<h3 class="features-title">🎁 Sticker Meme dan Foto Anime</h3>
+        </div>
+         <div class="social-buttons">
+                <a class="btn btn-mediafire" href="https://www.mediafire.com/folder/6x06eaw9hqjty/Paket+Sticker" target="_blank">
+                    🖇️ Sticker Meme Dan Anime
+                </a>
+              <a class="btn btn-pinterest" href="https://www.pinterest.com/bluearchive09/_created" target="_blank">
+                    🌸 Foto Anime
+                </a>
+            </div>
+        <div class="bot-showcase fade-in">
+<div class="harga-container"><h3 class="features-title">💲 List Harga BOT</h3>
+    <div class="product-description" style="text-align:left;">
+        <div class="rule-item">🔹 1 Minggu: Rp10.000</div>
+        <div class="rule-item">🔸 2 Minggu: Rp15.000</div>
+        <div class="rule-item">💠 1 Bulan: Rp20.000</div>
+        <div class="rule-item">🛡️ Permanen: Rp30.000 + Bonus Setup</div>
+    </div>
+    </div></div>
+    
+<!-- Form Order WhatsApp -->
+<div class="product-card fade-in">
+    <h2 class="product-title">📦 Form Order Cepat</h2>
+    <form onsubmit="return confirmOrder(this)">
+        <input type="text" name="name" placeholder="Nama Anda" required style="padding:10px;border-radius:8px;width:100%;margin-bottom:10px;">
+        <input type="text" name="durasi" placeholder="Durasi Sewa (misal: 1 Bulan)" required style="padding:10px;border-radius:8px;width:100%;margin-bottom:10px;">
+        <textarea name="pesan" placeholder="Pesan tambahan (opsional)" style="padding:10px;border-radius:8px;width:100%;height:80px;margin-bottom:10px;"></textarea>
+        <button type="submit" class="btn btn-whatsapp">🚀 Kirim ke WhatsApp</button>
+    </form>
+</div>
+
+<script>
+function confirmOrder(form) {
+    const name = form.name.value.trim();
+    const durasi = form.durasi.value.trim();
+    const pesan = form.pesan.value.trim() || '-';
+    const message = `Halo OmYudz, saya ${name}. Saya ingin sewa BOT dengan durasi ${durasi}. Pesan: ${pesan}`;
+    const waUrl = `https://wa.me/6285135673054?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, '_blank');
+    return false;
+}
+</script>
+</div>
+
+    <script>
+        // Hitung durasi kunjungan
+        let startTime = Date.now();
+        let totalVisits = localStorage.getItem('totalVisits');
+        totalVisits = totalVisits ? parseInt(totalVisits) + 1 : 1;
+        localStorage.setItem('totalVisits', totalVisits);
+
+        function updateStats() {
+            const now = Date.now();
+            const duration = Math.floor((now - startTime) / 1000); // detik
+            const minutes = Math.floor(duration / 60);
+            const seconds = duration % 60;
+
+            document.getElementById('visit-stats').innerHTML =
+                `👤 Kunjungan ke ${totalVisits}<br>🕒 Durasi: ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateStats, 1000);
+
+        // Start button functionality
+        document.getElementById("startButton").addEventListener("click", function () {
+            const video = document.getElementById("backgroundVideo");
+            const overlay = document.getElementById("startOverlay");
+            const muteButton = document.getElementById("muteButton");
+            
+            video.muted = false;
+            muteButton.textContent = "🔊";
+            
+            video.play().then(() => {
+                overlay.style.display = "none";
+            }).catch(err => {
+                console.error("Playback failed:", err);
+                overlay.style.display = "none";
+            });
+        });
+
+        // Mute/Unmute functionality
+        document.getElementById("muteButton").addEventListener("click", function () {
+            const video = document.getElementById("backgroundVideo");
+            const button = this;
+            
+            if (video.muted) {
+                video.muted = false;
+                button.textContent = "🔊";
+            } else {
+                video.muted = true;
+                button.textContent = "🔇";
+            }
+        });
+    </script>
+</body>
+</html>
