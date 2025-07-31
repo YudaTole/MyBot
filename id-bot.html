@@ -570,15 +570,18 @@
     </div></div>
     
 <!-- Form Order WhatsApp -->
-<div class="product-card fade-in harga-container">
-    <h2 class="product-title">📦 Form Order Cepat</h2>
-    <form onsubmit="return confirmOrder(this)">
-        <input type="text" name="name" placeholder="Nama Anda" required style="padding:10px;border-radius:8px;width:100%;margin-bottom:10px;">
-        <input type="text" name="durasi" placeholder="Durasi Sewa (misal: 1 Bulan)" required style="padding:10px;border-radius:8px;width:100%;margin-bottom:10px;">
-        <textarea name="pesan" placeholder="Pesan tambahan (opsional)" style="padding:10px;border-radius:8px;width:100%;height:80px;margin-bottom:10px;"></textarea>
-        <button type="submit" class="btn btn-whatsapp">🚀 Kirim ke WhatsApp</button>
-    </form>
+<div class="order-form-wrapper fade-in">
+    <div class="product-card harga-container">
+        <h2 class="product-title">📦 Form Order Cepat</h2>
+        <form onsubmit="return confirmOrder(this)">
+            <input type="text" name="name" placeholder="Nama Anda" required style="padding:10px;border-radius:8px;width:100%;margin-bottom:10px;">
+            <input type="text" name="durasi" placeholder="Durasi Sewa (misal: 1 Bulan)" required style="padding:10px;border-radius:8px;width:100%;margin-bottom:10px;">
+            <textarea name="pesan" placeholder="Pesan tambahan (opsional)" style="padding:10px;border-radius:8px;width:100%;height:80px;margin-bottom:10px;"></textarea>
+            <button type="submit" class="btn btn-whatsapp">🚀 Kirim ke WhatsApp</button>
+        </form>
+    </div>
 </div>
+
 
 <script>
 function confirmOrder(form) {
